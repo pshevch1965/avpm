@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "avpm"
+version = "0.2.0-alpha2"
+description = "AdGuard VPN Manager for Linux"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+authors = [
+    {name = "Pavel Shevchenko"}
+]
+
+dependencies = []
+
+[project.scripts]
+vpn = "avpm.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
