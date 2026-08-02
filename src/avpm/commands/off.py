@@ -5,18 +5,17 @@ from avpm.backends.adguard import AdGuardBackend
 
 def run(args) -> int:
     backend = AdGuardBackend()
+    backend.disconnect()
 
-    status = backend.status()
-
-    print(status.raw)
+    print("VPN disconnected.")
 
     return 0
 
 
 def register(subparsers) -> None:
     parser = subparsers.add_parser(
-        "status",
-        help="Show VPN status",
+        "off",
+        help="Disconnect VPN",
     )
 
     parser.set_defaults(func=run)

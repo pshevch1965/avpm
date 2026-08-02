@@ -5,18 +5,23 @@ from avpm.backends.adguard import AdGuardBackend
 
 def run(args) -> int:
     backend = AdGuardBackend()
+    backend.connect(args.location)
 
-    status = backend.status()
-
-    print(status.raw)
+    print("VPN connected.")
 
     return 0
 
 
 def register(subparsers) -> None:
     parser = subparsers.add_parser(
-        "status",
-        help="Show VPN status",
+        "on",
+        help="Connect VPN",
+    )
+
+    parser.add_argument(
+        "-l",
+        "--location",
+        help="VPN location",
     )
 
     parser.set_defaults(func=run)

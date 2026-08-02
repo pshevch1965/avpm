@@ -7,7 +7,10 @@ from avpm.commands.about import register as register_about
 from avpm.commands.help import register as register_help
 from avpm.commands.version import register as register_version
 from avpm.commands.status import register as register_status
-
+from avpm.exceptions import AvpmError
+from avpm.commands.backend import register as register_backend
+from avpm.commands.on import register as register_on
+from avpm.commands.off import register as register_off
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -24,6 +27,9 @@ def build_parser() -> argparse.ArgumentParser:
     register_about(subparsers)
     register_help(subparsers)
     register_status(subparsers)
+    register_backend(subparsers)
+    register_on(subparsers)
+    register_off(subparsers)
 
     return parser
 
@@ -37,7 +43,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.print_help()
         return 0
 
-    return args.func(args)
+    try:
+        return args.func(args)
+    except AvpmError as exc:
+        print(f"ERROR: {exc}")
+        return 1
 
 
 if __name__ == "__main__":
