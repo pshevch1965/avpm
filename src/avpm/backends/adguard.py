@@ -4,7 +4,7 @@ import shutil
 import subprocess
 
 from avpm.backends.base import Backend
-from avpm.exceptions import BackendNotFoundError
+from avpm.exceptions import BackendError, BackendNotFoundError
 from avpm.models import VPNStatus
 from avpm.models import Location
 
@@ -71,7 +71,7 @@ class AdGuardBackend(Backend):
                 f"'{self.executable}' was not found in PATH"
             )
 
-        result = self._run("locations")
+        result = self._run("list-locations")
 
         if result.returncode != 0:
             raise BackendError(result.stderr.strip() or "Unable to obtain locations")
