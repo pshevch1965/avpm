@@ -16,6 +16,7 @@ class VPNStatus:
 class Location:
     """VPN location."""
 
+    iso: str
     country: str
     city: str
-    code: str | None = None
+    ping: int | None = None

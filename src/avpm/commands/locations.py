@@ -8,8 +8,18 @@ def run(args) -> int:
 
     locations = backend.locations()
 
+    print(f"{'ISO':<5} {'Country':<22} {'City':<28} {'Ping':>5}")
+    print("-" * 65)
+
     for location in locations:
-        print(location.country)
+        ping = "-" if location.ping is None else str(location.ping)
+
+        print(
+            f"{location.iso:<5}"
+            f"{location.country:<22}"
+            f"{location.city:<28}"
+            f"{ping:>5}"
+        )
 
     return 0
 
