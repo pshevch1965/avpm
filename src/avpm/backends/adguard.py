@@ -3,11 +3,13 @@ from __future__ import annotations
 import shutil
 import subprocess
 import re
+from unittest import result
 
 from avpm.backends.base import Backend
 from avpm.exceptions import BackendError, BackendNotFoundError
 from avpm.models import VPNStatus
 from avpm.models import Location
+from avpm.utils.text import strip_ansi
 
 class AdGuardBackend(Backend):
     def __init__(self, executable: str = "adguardvpn-cli") -> None:
@@ -23,6 +25,9 @@ class AdGuardBackend(Backend):
             text=True,
             check=False,
         )
+        result.stdout = strip_ansi(result.stdout)
+        result.stderr = strip_ansi(result.stderr)
+        return result
 
     def status(self) -> VPNStatus:
         if not self.exists():
@@ -78,7 +83,7 @@ class AdGuardBackend(Backend):
                 result.stderr.strip() or "Unable to obtain locations"
             )
 
-        text = self._strip_ansi(result.stdout)
+        text = result.stdout
 
         locations: list[Location] = []
 
@@ -89,25 +94,42 @@ class AdGuardBackend(Backend):
             if not line:
                 continue
 
-            if line.startswith("ISO"):
+            if "COUNTRY" in line and "CITY" in line:
                 continue
 
             if line.startswith("You can connect"):
                 continue
 
-            parts = re.split(r"\s{2,}", line)
+            # Последнее поле — ping
+            match = re.search(r"\s+(\d+)$", line)
 
-            if len(parts) < 4:
+            if not match:
                 continue
 
-            iso = parts[0]
-            country = parts[1]
-            city = parts[2]
+            ping = int(match.group(1))
 
-            try:
-                ping = int(parts[3])
-            except ValueError:
-                ping = None
+            data = line[:match.start()].strip()
+
+            # ISO — первые 2 символа
+            iso = data[:2]
+
+            rest = data[2:].strip()
+
+            parts = re.split(r"\s{2,}", rest)
+
+            if len(parts) == 2:
+                # иногда city сливается с country/ISO на первой строке
+                city_match = re.search(r"([A-Za-zÀ-ÿ ()]+)\s+(\d+)$", parts[1])
+
+                if city_match:
+                    city = city_match.group(1).strip()
+                    ping = int(city_match.group(2))
+
+            if len(parts) < 2:
+                continue
+
+            country = parts[0]
+            city = parts[1]
 
             locations.append(
                 Location(
@@ -117,13 +139,5 @@ class AdGuardBackend(Backend):
                     ping=ping,
                 )
             )
-
         return locations
 
-    @staticmethod
-    def _strip_ansi(text: str) -> str:
-        return re.sub(
-            r"\x1b\[[0-9;]*m",
-            "",
-            text,
-        )
