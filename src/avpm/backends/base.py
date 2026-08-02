@@ -23,4 +23,4 @@ class Backend(ABC):
 
     @abstractmethod
     def locations(self) -> list[Location]:
-        ...
+        """Return available VPN locations."""

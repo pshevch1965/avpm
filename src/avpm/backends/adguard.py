@@ -66,4 +66,29 @@ class AdGuardBackend(Backend):
             raise BackendError(result.stderr.strip() or "Disconnect failed")
 
     def locations(self) -> list[Location]:
-        return []
+        if not self.exists():
+            raise BackendNotFoundError(
+                f"'{self.executable}' was not found in PATH"
+            )
+
+        result = self._run("locations")
+
+        if result.returncode != 0:
+            raise BackendError(result.stderr.strip() or "Unable to obtain locations")
+
+        locations: list[Location] = []
+
+        for line in result.stdout.splitlines():
+            line = line.strip()
+
+            if not line:
+                continue
+
+            locations.append(
+                Location(
+                    country=line,
+                    city="",
+                )
+            )
+
+        return locations

@@ -11,6 +11,7 @@ from avpm.exceptions import AvpmError
 from avpm.commands.backend import register as register_backend
 from avpm.commands.on import register as register_on
 from avpm.commands.off import register as register_off
+from avpm.commands.locations import register as register_locations
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -30,6 +31,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_backend(subparsers)
     register_on(subparsers)
     register_off(subparsers)
+    register_locations(subparsers)
 
     return parser
 

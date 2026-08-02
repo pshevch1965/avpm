@@ -14,7 +14,7 @@ class VPNStatus:
 
 @dataclass(slots=True, frozen=True)
 class Location:
-    """Available VPN location."""
+    """VPN location."""
 
     country: str
     city: str
