@@ -88,56 +88,38 @@ class AdGuardBackend(Backend):
         locations: list[Location] = []
 
         for line in text.splitlines():
+        line = line.rstrip()
 
-            line = line.strip()
+        if not line:
+            continue
 
-            if not line:
-                continue
+        # убрать служебные строки
+        if line.startswith("ISO"):
+            continue
 
-            if "COUNTRY" in line and "CITY" in line:
-                continue
+        if line.startswith("You can connect"):
+            break
 
-            if line.startswith("You can connect"):
-                continue
+        iso = line[0:6].strip()
+        country = line[6:27].strip()
+        city = line[27:58].strip()
+        ping_text = line[58:].strip()
 
-            # Последнее поле — ping
-            match = re.search(r"\s+(\d+)$", line)
+        if not iso:
+            continue
 
-            if not match:
-                continue
+        try:
+            ping = int(ping_text)
+        except ValueError:
+            ping = None
 
-            ping = int(match.group(1))
-
-            data = line[:match.start()].strip()
-
-            # ISO — первые 2 символа
-            iso = data[:2]
-
-            rest = data[2:].strip()
-
-            parts = re.split(r"\s{2,}", rest)
-
-            if len(parts) == 2:
-                # иногда city сливается с country/ISO на первой строке
-                city_match = re.search(r"([A-Za-zÀ-ÿ ()]+)\s+(\d+)$", parts[1])
-
-                if city_match:
-                    city = city_match.group(1).strip()
-                    ping = int(city_match.group(2))
-
-            if len(parts) < 2:
-                continue
-
-            country = parts[0]
-            city = parts[1]
-
-            locations.append(
-                Location(
-                    iso=iso,
-                    country=country,
-                    city=city,
-                    ping=ping,
-                )
+        locations.append(
+            Location(
+                iso=iso,
+                country=country,
+                city=city,
+                ping=ping,
             )
+        )
         return locations
 

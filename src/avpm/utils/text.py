@@ -4,7 +4,7 @@ import re
 
 
 ANSI_ESCAPE = re.compile(
-    r"\x1b\[[0-9;]*m"
+    r"\x1B\[[0-?]*[ -/]*[@-~]"
 )
 
 
