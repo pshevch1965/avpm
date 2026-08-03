@@ -86,38 +86,38 @@ class AdGuardBackend(Backend):
         locations: list[Location] = []
 
         for line in text.splitlines():
-        line = line.rstrip()
+            line = line.rstrip()
 
-        if not line:
-            continue
+            if not line:
+                continue
 
-        # убрать служебные строки
-        if line.startswith("ISO"):
-            continue
+            # убрать служебные строки
+            if line.startswith("ISO"):
+                continue
 
-        if line.startswith("You can connect"):
-            break
+            if line.startswith("You can connect"):
+                break
 
-        iso = line[0:6].strip()
-        country = line[6:27].strip()
-        city = line[27:58].strip()
-        ping_text = line[58:].strip()
+            iso = line[0:6].strip()
+            country = line[6:27].strip()
+            city = line[27:58].strip()
+            ping_text = line[58:].strip()
 
-        if not iso:
-            continue
+            if not iso:
+                continue
 
-        try:
-            ping = int(ping_text)
-        except ValueError:
-            ping = None
+            try:
+                ping = int(ping_text)
+            except ValueError:
+                ping = None
 
-        locations.append(
-            Location(
-                iso=iso,
-                country=country,
-                city=city,
-                ping=ping,
-            )
+            locations.append(
+                Location(
+                    iso=iso,
+                    country=country,
+                    city=city,
+                    ping=ping,
+                )
         )
         return locations
 
