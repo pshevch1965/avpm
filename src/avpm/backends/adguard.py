@@ -25,8 +25,6 @@ class AdGuardBackend(Backend):
             text=True,
             check=False,
         )
-        result.stdout = strip_ansi(result.stdout)
-        result.stderr = strip_ansi(result.stderr)
         return result
 
     def status(self) -> VPNStatus:
@@ -83,7 +81,7 @@ class AdGuardBackend(Backend):
                 result.stderr.strip() or "Unable to obtain locations"
             )
 
-        text = result.stdout
+        text = strip_ansi(result.stdout)
 
         locations: list[Location] = []
 
