@@ -42,20 +42,19 @@ class AdGuardBackend(Backend):
         )
 
     def connect(self, location: str | None = None) -> None:
-        if not self.exists():
-            raise BackendNotFoundError(
-                f"'{self.executable}' was not found in PATH"
-            )
-
-        args = ["connect"]
-
         if location:
-            args.extend(["-l", location])
-
-        result = self._run(*args)
+            result = self._run("connect", "-l", location)
+        else:
+            result = self._run("connect")
 
         if result.returncode != 0:
-            raise BackendError(result.stderr.strip() or "Connection failed")
+            raise BackendError(
+                result.stderr.strip() or
+                result.stdout.strip() or
+                "Unable to connect VPN"
+            )
+
+        print(result.stdout.strip())
 
     def disconnect(self) -> None:
         if not self.exists():
