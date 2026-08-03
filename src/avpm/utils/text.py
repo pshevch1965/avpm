@@ -9,5 +9,5 @@ ANSI_ESCAPE = re.compile(
 
 
 def strip_ansi(text: str) -> str:
-    """Remove ANSI escape sequences from terminal output."""
+    """Remove ANSI escape sequences from terminal output"""
     return ANSI_ESCAPE.sub("", text)
