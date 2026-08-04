@@ -14,7 +14,7 @@ class Backend(ABC):
         ...
 
     @abstractmethod
-    def connect(self, location: str | None = None) -> None:
+    def connect(self, location: str | None = None) -> str:
         ...
 
     @abstractmethod

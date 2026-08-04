@@ -7,7 +7,8 @@ def run(args: Namespace) -> int:
     backend = AdGuardBackend()
 
     try:
-        backend.connect(args.location)
+        output = backend.connect(args.location)
+        print(clean_connect_output(output))
         return 0
     except BackendError as exc:
         print(f"ERROR: {exc}")
@@ -27,3 +28,11 @@ def register(subparsers) -> None:
     )
 
     parser.set_defaults(func=run)
+
+def clean_connect_output(text: str) -> str:
+    ignored = "Log is being written to:"
+
+    return "\n".join(
+        line for line in text.splitlines()
+        if not line.startswith(ignored)
+    ).strip()

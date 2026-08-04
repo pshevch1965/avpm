@@ -54,7 +54,7 @@ class AdGuardBackend(Backend):
                 "Unable to connect VPN"
             )
 
-        print(result.stdout.strip())
+        return result.stdout.strip()
 
     def disconnect(self) -> None:
         if not self.exists():
