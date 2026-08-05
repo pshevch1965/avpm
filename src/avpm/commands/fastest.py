@@ -1,6 +1,7 @@
 from argparse import ArgumentParser, Namespace
 
 from avpm.backends.adguard import AdGuardBackend
+from avpm.uint.table import print_locations
 
 
 def run(args: Namespace) -> int:
@@ -12,22 +13,17 @@ def run(args: Namespace) -> int:
         print(f"ERROR: {exc}")
         return 1
 
-    locations.sort(key=lambda loc: loc.ping)
+    locations = sorted(
+        locations,
+        key=lambda x: x.ping,
+    )
 
     limit = args.count or 10
 
-    print(f"Top {limit} fastest locations\n")
-
-    print(f"{'ISO':<4} {'Country':<22} {'City':<30} {'Ping'}")
-    print("-" * 65)
-
-    for loc in locations[:limit]:
-        print(
-            f"{loc.iso:<4} "
-            f"{loc.country:<22} "
-            f"{loc.city:<30} "
-            f"{loc.ping}"
-        )
+    print_locations(
+        locations[:limit],
+        title=f"Top {limit} fastest locations",
+    )
 
     return 0
 
