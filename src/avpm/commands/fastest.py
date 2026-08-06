@@ -1,7 +1,7 @@
 from argparse import ArgumentParser, Namespace
 
 from avpm.backends.adguard import AdGuardBackend
-from avpm.uint.table import print_locations
+from avpm.ui import print_locations
 
 
 def run(args: Namespace) -> int:
