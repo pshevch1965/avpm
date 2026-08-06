@@ -2,10 +2,12 @@ from argparse import ArgumentParser, Namespace
 
 from avpm.backends.adguard import AdGuardBackend
 from avpm.ui import print_locations
+from avpm.services.locations import sort_by_ping
 
 
 def run(args: Namespace) -> int:
     backend = AdGuardBackend()
+
 
     try:
         locations = backend.locations()
@@ -13,9 +15,8 @@ def run(args: Namespace) -> int:
         print(f"ERROR: {exc}")
         return 1
 
-    locations = sorted(
-        locations,
-        key=lambda x: x.ping,
+    locations = sort_by_ping(
+        backend.locations(),
     )
 
     limit = args.count or 10
