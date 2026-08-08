@@ -10,6 +10,9 @@ def run(args: Namespace) -> int:
     backend = AdGuardBackend()
 
     try:
+        if args.country and not args.fastest:
+            raise BackendError("--country requires --fastest")
+
         if args.if_needed and backend.status().connected:
             print("VPN is already connected.")
             return 0
@@ -17,7 +20,10 @@ def run(args: Namespace) -> int:
         location = args.location
 
         if args.fastest:
-            fastest = get_fastest_location(backend)
+            fastest = get_fastest_location(
+                backend,
+                country=args.country,
+            )
             location = fastest.city
             print(
                 "Fastest location: "
@@ -51,6 +57,12 @@ def register(subparsers) -> None:
         "--fastest",
         action="store_true",
         help="Reconnect to the location with the lowest ping",
+    )
+
+    parser.add_argument(
+        "-c",
+        "--country",
+        help="Limit fastest-location selection by country name or ISO code",
     )
 
     parser.add_argument(

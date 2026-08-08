@@ -9,10 +9,16 @@ def run(args: Namespace) -> int:
     backend = AdGuardBackend()
 
     try:
+        if args.country and not args.fastest:
+            raise BackendError("--country requires --fastest")
+
         location = args.location
 
         if args.fastest:
-            fastest = get_fastest_location(backend)
+            fastest = get_fastest_location(
+                backend,
+                country=args.country,
+            )
 
             location = fastest.city
             print(
@@ -47,6 +53,12 @@ def register(subparsers) -> None:
         "--fastest",
         action="store_true",
         help="Connect to the location with the lowest ping",
+    )
+
+    parser.add_argument(
+        "-c",
+        "--country",
+        help="Limit fastest-location selection by country name or ISO code",
     )
 
     parser.set_defaults(func=run)
