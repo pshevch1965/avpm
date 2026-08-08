@@ -3,7 +3,51 @@ from __future__ import annotations
 import unittest
 
 from avpm.models import Location
-from avpm.services.locations import fastest_location, sort_by_ping
+from avpm.services.locations import (
+    fastest_location,
+    filter_locations,
+    sort_by_ping,
+)
+
+
+class FilterLocationsTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.locations = [
+            Location("DE", "Germany", "Berlin", 42),
+            Location("DE", "Germany", "Frankfurt", 57),
+            Location("EE", "Estonia", "Tallinn", 18),
+            Location("XX", "Unknown", "Unknown", None),
+        ]
+
+    def test_filters_by_iso_case_insensitively(self) -> None:
+        result = filter_locations(self.locations, country="de")
+
+        self.assertEqual(
+            [location.city for location in result],
+            ["Berlin", "Frankfurt"],
+        )
+
+    def test_filters_by_country_name_case_insensitively(self) -> None:
+        result = filter_locations(self.locations, country="ESTONIA")
+
+        self.assertEqual([location.city for location in result], ["Tallinn"])
+
+    def test_filters_by_max_ping_and_excludes_unknown_ping(self) -> None:
+        result = filter_locations(self.locations, max_ping=50)
+
+        self.assertEqual(
+            [location.city for location in result],
+            ["Berlin", "Tallinn"],
+        )
+
+    def test_combines_country_and_max_ping(self) -> None:
+        result = filter_locations(
+            self.locations,
+            country="DE",
+            max_ping=50,
+        )
+
+        self.assertEqual([location.city for location in result], ["Berlin"])
 
 
 class SortByPingTests(unittest.TestCase):

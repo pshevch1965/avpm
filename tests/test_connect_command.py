@@ -22,7 +22,9 @@ class ConnectCommandTests(unittest.TestCase):
         output = StringIO()
 
         with redirect_stdout(output):
-            result = run(Namespace(location=None, fastest=True))
+            result = run(
+                Namespace(location=None, fastest=True, country=None)
+            )
 
         self.assertEqual(result, 0)
         backend.locations.assert_called_once_with()
@@ -38,11 +40,32 @@ class ConnectCommandTests(unittest.TestCase):
         output = StringIO()
 
         with redirect_stdout(output):
-            result = run(Namespace(location=None, fastest=True))
+            result = run(
+                Namespace(location=None, fastest=True, country=None)
+            )
 
         self.assertEqual(result, 1)
         backend.connect.assert_not_called()
         self.assertIn("No VPN locations with known ping found", output.getvalue())
+
+    @patch("avpm.commands.connect.AdGuardBackend")
+    def test_connects_to_fastest_city_in_country(self, backend_class) -> None:
+        backend = backend_class.return_value
+        backend.locations.return_value = [
+            Location("DE", "Germany", "Berlin", 42),
+            Location("DE", "Germany", "Frankfurt", 57),
+            Location("EE", "Estonia", "Tallinn", 18),
+        ]
+        backend.connect.return_value = "Successfully connected"
+        output = StringIO()
+
+        with redirect_stdout(output):
+            result = run(
+                Namespace(location=None, fastest=True, country="DE")
+            )
+
+        self.assertEqual(result, 0)
+        backend.connect.assert_called_once_with("Berlin")
 
 
 if __name__ == "__main__":
