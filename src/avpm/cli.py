@@ -31,7 +31,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     register_version(subparsers)
     register_about(subparsers)
-    register_help(subparsers)
+    register_help(subparsers, parser)
     register_status(subparsers)
     register_backend(subparsers)
     register_on(subparsers)

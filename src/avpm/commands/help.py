@@ -1,15 +1,20 @@
 from __future__ import annotations
 
+import argparse
 
-def run(args) -> int:
+
+def run(args: argparse.Namespace) -> int:
     args.parser.print_help()
     return 0
 
 
-def register(subparsers) -> None:
+def register(
+    subparsers,
+    root_parser: argparse.ArgumentParser,
+) -> None:
     parser = subparsers.add_parser(
         "help",
         help="Show help",
     )
 
-    parser.set_defaults(func=run, parser=subparsers._parser_class())
+    parser.set_defaults(func=run, parser=root_parser)
