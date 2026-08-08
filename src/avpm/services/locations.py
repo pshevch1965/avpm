@@ -14,3 +14,17 @@ def sort_by_ping(
             location.ping if location.ping is not None else 0,
         ),
     )
+
+
+def fastest_location(
+    locations: list[Location],
+) -> Location | None:
+    """Return the location with the lowest known ping."""
+    return next(
+        (
+            location
+            for location in sort_by_ping(locations)
+            if location.ping is not None
+        ),
+        None,
+    )
