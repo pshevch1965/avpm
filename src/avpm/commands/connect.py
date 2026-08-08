@@ -2,7 +2,7 @@ from argparse import ArgumentParser, Namespace
 
 from avpm.backends.adguard import AdGuardBackend
 from avpm.exceptions import BackendError
-from avpm.services.locations import fastest_location
+from avpm.services.connection import get_fastest_location
 
 
 def run(args: Namespace) -> int:
@@ -12,10 +12,7 @@ def run(args: Namespace) -> int:
         location = args.location
 
         if args.fastest:
-            fastest = fastest_location(backend.locations())
-
-            if fastest is None:
-                raise BackendError("No VPN locations with known ping found")
+            fastest = get_fastest_location(backend)
 
             location = fastest.city
             print(

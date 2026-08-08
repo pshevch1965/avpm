@@ -3,6 +3,7 @@ from argparse import ArgumentParser, Namespace
 from avpm.backends.adguard import AdGuardBackend
 from avpm.commands.connect import clean_connect_output
 from avpm.exceptions import BackendError
+from avpm.services.connection import get_fastest_location
 
 
 def run(args: Namespace) -> int:
@@ -13,7 +14,17 @@ def run(args: Namespace) -> int:
             print("VPN is already connected.")
             return 0
 
-        output = backend.connect(args.location)
+        location = args.location
+
+        if args.fastest:
+            fastest = get_fastest_location(backend)
+            location = fastest.city
+            print(
+                "Fastest location: "
+                f"{fastest.city}, {fastest.country} ({fastest.ping} ms)"
+            )
+
+        output = backend.connect(location)
         print(clean_connect_output(output))
         return 0
     except BackendError as exc:
@@ -27,10 +38,19 @@ def register(subparsers) -> None:
         help="Reconnect VPN",
     )
 
-    parser.add_argument(
+    location_group = parser.add_mutually_exclusive_group()
+
+    location_group.add_argument(
         "location",
         nargs="?",
         help="ISO code or city name",
+    )
+
+    location_group.add_argument(
+        "-f",
+        "--fastest",
+        action="store_true",
+        help="Reconnect to the location with the lowest ping",
     )
 
     parser.add_argument(
