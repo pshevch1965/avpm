@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+import json
 from argparse import Namespace
 from contextlib import redirect_stdout
 from io import StringIO
@@ -21,7 +22,7 @@ class StatusCommandTests(unittest.TestCase):
         output = StringIO()
 
         with redirect_stdout(output):
-            result = run(Namespace(quiet=True))
+            result = run(Namespace(quiet=True, json=False))
 
         self.assertEqual(result, 0)
         self.assertEqual(output.getvalue(), "")
@@ -35,7 +36,7 @@ class StatusCommandTests(unittest.TestCase):
         output = StringIO()
 
         with redirect_stdout(output):
-            result = run(Namespace(quiet=True))
+            result = run(Namespace(quiet=True, json=False))
 
         self.assertEqual(result, 1)
         self.assertEqual(output.getvalue(), "")
@@ -48,7 +49,7 @@ class StatusCommandTests(unittest.TestCase):
         output = StringIO()
 
         with redirect_stdout(output):
-            result = run(Namespace(quiet=True))
+            result = run(Namespace(quiet=True, json=False))
 
         self.assertEqual(result, 1)
         self.assertEqual(output.getvalue(), "")
@@ -62,10 +63,42 @@ class StatusCommandTests(unittest.TestCase):
         output = StringIO()
 
         with redirect_stdout(output):
-            result = run(Namespace(quiet=False))
+            result = run(Namespace(quiet=False, json=False))
 
         self.assertEqual(result, 0)
         self.assertEqual(output.getvalue().strip(), "Connected to TALLINN")
+
+    @patch("avpm.commands.status.AdGuardBackend")
+    def test_json_status(self, backend_class) -> None:
+        backend_class.return_value.status.return_value = VPNStatus(
+            connected=True,
+            location="TALLINN",
+            raw="Connected to TALLINN in TUN mode, running on tun0",
+        )
+        output = StringIO()
+
+        with redirect_stdout(output):
+            result = run(Namespace(quiet=False, json=True))
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(result, 0)
+        self.assertTrue(payload["connected"])
+        self.assertEqual(payload["location"], "TALLINN")
+
+    @patch("avpm.commands.status.AdGuardBackend")
+    def test_json_backend_error(self, backend_class) -> None:
+        backend_class.return_value.status.side_effect = BackendError(
+            "Status failed"
+        )
+        output = StringIO()
+
+        with redirect_stdout(output):
+            result = run(Namespace(quiet=False, json=True))
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(result, 1)
+        self.assertFalse(payload["connected"])
+        self.assertEqual(payload["error"], "Status failed")
 
 
 if __name__ == "__main__":

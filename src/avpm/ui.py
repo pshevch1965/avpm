@@ -4,7 +4,9 @@ Output helpers.
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
+
 from avpm.models import Location
 
 
@@ -20,6 +22,11 @@ def info(text: str) -> None:
 
 def error(text: str) -> None:
     print(f"ERROR: {text}")
+
+
+def print_json(value: object) -> None:
+    print(json.dumps(value, ensure_ascii=False, indent=2))
+
 
 def print_locations(
     locations: Sequence[Location],
