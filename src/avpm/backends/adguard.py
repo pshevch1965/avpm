@@ -5,6 +5,7 @@ import subprocess
 from avpm.backends.base import Backend
 from avpm.exceptions import BackendError, BackendNotFoundError
 from avpm.models import Location, VPNStatus
+from avpm.services.locations import parse_locations
 from avpm.services.status import extract_location, is_connected
 from avpm.utils.text import strip_ansi
 
@@ -91,42 +92,4 @@ class AdGuardBackend(Backend):
                 result.stderr.strip() or "Unable to obtain locations"
             )
 
-        text = strip_ansi(result.stdout)
-
-        locations: list[Location] = []
-
-        for line in text.splitlines():
-            line = line.rstrip()
-
-            if not line:
-                continue
-
-            # убрать служебные строки
-            if line.startswith("ISO"):
-                continue
-
-            if line.startswith("You can connect"):
-                break
-
-            iso = line[0:6].strip()
-            country = line[6:27].strip()
-            city = line[27:58].strip()
-            ping_text = line[58:].strip()
-
-            if not iso:
-                continue
-
-            try:
-                ping = int(ping_text)
-            except ValueError:
-                ping = None
-
-            locations.append(
-                Location(
-                    iso=iso,
-                    country=country,
-                    city=city,
-                    ping=ping,
-                )
-            )
-        return locations
+        return parse_locations(result.stdout)

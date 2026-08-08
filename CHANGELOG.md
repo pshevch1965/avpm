@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- JSON output for `status`, `locations`, and `fastest`
+- active-location extraction from AdGuard VPN status output
+- dedicated parser for the fixed-width AdGuard VPN location table
+
+Changed:
+
+- location parsing now validates ISO codes and ignores malformed rows
+
 ## 0.3.0-alpha3
 
 Added:
