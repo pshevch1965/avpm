@@ -5,6 +5,7 @@ import subprocess
 from avpm.backends.base import Backend
 from avpm.exceptions import BackendError, BackendNotFoundError
 from avpm.models import Location, VPNStatus
+from avpm.services.status import is_connected
 from avpm.utils.text import strip_ansi
 
 
@@ -30,10 +31,18 @@ class AdGuardBackend(Backend):
             )
 
         result = self._run("status")
+
+        if result.returncode != 0:
+            raise BackendError(
+                result.stderr.strip()
+                or result.stdout.strip()
+                or "Unable to obtain VPN status"
+            )
+
         text = result.stdout.strip()
 
         return VPNStatus(
-            connected="connected" in text.lower(),
+            connected=is_connected(text),
             raw=text,
         )
 
