@@ -2,6 +2,7 @@ from argparse import ArgumentParser, Namespace
 
 from avpm.backends.adguard import AdGuardBackend
 from avpm.commands.connect import clean_connect_output
+from avpm.exceptions import BackendError
 
 
 def run(args: Namespace) -> int:

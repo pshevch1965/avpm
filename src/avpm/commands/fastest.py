@@ -1,13 +1,13 @@
 from argparse import ArgumentParser, Namespace
 
 from avpm.backends.adguard import AdGuardBackend
-from avpm.ui import print_locations
+from avpm.exceptions import BackendError
 from avpm.services.locations import sort_by_ping
+from avpm.ui import print_locations
 
 
 def run(args: Namespace) -> int:
     backend = AdGuardBackend()
-
 
     try:
         locations = backend.locations()
@@ -15,11 +15,9 @@ def run(args: Namespace) -> int:
         print(f"ERROR: {exc}")
         return 1
 
-    locations = sort_by_ping(
-        backend.locations(),
-    )
+    locations = sort_by_ping(locations)
 
-    limit = args.count or 10
+    limit = args.count
 
     print_locations(
         locations[:limit],
@@ -29,7 +27,7 @@ def run(args: Namespace) -> int:
     return 0
 
 
-def register(subparsers):
+def register(subparsers) -> None:
     parser = subparsers.add_parser(
         "fastest",
         help="Show fastest VPN locations",

@@ -2,14 +2,11 @@ from __future__ import annotations
 
 import shutil
 import subprocess
-import re
-from unittest import result
-
 from avpm.backends.base import Backend
 from avpm.exceptions import BackendError, BackendNotFoundError
-from avpm.models import VPNStatus
-from avpm.models import Location
+from avpm.models import Location, VPNStatus
 from avpm.utils.text import strip_ansi
+
 
 class AdGuardBackend(Backend):
     def __init__(self, executable: str = "adguardvpn-cli") -> None:
@@ -25,7 +22,6 @@ class AdGuardBackend(Backend):
             text=True,
             check=False,
         )
-        return result
 
     def status(self) -> VPNStatus:
         if not self.exists():
@@ -41,7 +37,12 @@ class AdGuardBackend(Backend):
             raw=text,
         )
 
-    def connect(self, location: str | None = None) -> None:
+    def connect(self, location: str | None = None) -> str:
+        if not self.exists():
+            raise BackendNotFoundError(
+                f"'{self.executable}' was not found in PATH"
+            )
+
         if location:
             result = self._run("connect", "-l", location)
         else:
@@ -117,6 +118,5 @@ class AdGuardBackend(Backend):
                     city=city,
                     ping=ping,
                 )
-        )
+            )
         return locations
-
