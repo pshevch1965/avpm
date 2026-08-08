@@ -21,6 +21,7 @@ htmlcov/
 # IDE
 .vscode/
 .idea/
+*.code-workspace
 
 # OS
 .DS_Store
