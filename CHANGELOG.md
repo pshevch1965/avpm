@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.0-alpha4
+
 Added:
 
 - JSON output for `status`, `locations`, and `fastest`

@@ -5,7 +5,7 @@
 AVPM (AdGuard VPN Manager) is a Python command-line manager for
 `adguardvpn-cli` on Linux.
 
-Current version: **0.3.0-alpha3**
+Current version: **0.4.0-alpha4**
 
 ## Requirements
 
