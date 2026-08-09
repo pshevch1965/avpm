@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import argparse
 from argparse import Namespace
+
+from avpm.models import Location
 
 
 COMMANDS = {
@@ -64,19 +67,53 @@ OPTION_DESCRIPTIONS = {
 }
 
 ZSH_VALUE_ARGUMENTS = {
-    "-l": ":location:",
-    "--location": ":location:",
-    "-c": ":country:",
-    "--country": ":country:",
+    "-l": ":location:->locations",
+    "--location": ":location:->locations",
+    "-c": ":country:->countries",
+    "--country": ":country:->countries",
     "--max-ping": ":milliseconds:",
 }
 
 ZSH_POSITIONAL_ARGUMENTS = {
-    "connect": "1:location:",
-    "reconnect": "1:location:",
+    "connect": "1:location:->locations",
+    "reconnect": "1:location:->locations",
     "fastest": "1:count:",
     "completion": "1:shell:(bash zsh)",
 }
+
+
+def completion_candidates(
+    locations: list[Location],
+    kind: str,
+) -> list[str]:
+    if kind == "countries":
+        countries = {
+            (location.iso, location.country)
+            for location in locations
+        }
+
+        return [
+            candidate
+            for iso, country in sorted(countries)
+            for candidate in (f"{iso}:{country}", f"{country}:{iso}")
+        ]
+
+    return sorted({
+        f"{location.city}:{location.country} ({location.iso})"
+        for location in locations
+    })
+
+
+def print_completion_candidates(kind: str) -> int:
+    from avpm.backends.adguard import AdGuardBackend
+
+    for candidate in completion_candidates(
+        AdGuardBackend().locations(),
+        kind,
+    ):
+        print(candidate)
+
+    return 0
 
 
 def bash_completion() -> str:
@@ -136,8 +173,32 @@ def zsh_completion() -> str:
     return f"""\
 #compdef vpn
 
+typeset -ga _vpn_country_cache _vpn_location_cache
+typeset -gi _vpn_country_cache_time=-300
+typeset -gi _vpn_location_cache_time=-300
+
+_vpn_complete_countries() {{
+    if (( SECONDS - _vpn_country_cache_time >= 300 || !$#_vpn_country_cache )); then
+        _vpn_country_cache=("${{(@f)$(vpn completion zsh --candidates countries 2>/dev/null)}}")
+        _vpn_country_cache_time=$SECONDS
+    fi
+
+    _describe 'country' _vpn_country_cache
+}}
+
+_vpn_complete_locations() {{
+    if (( SECONDS - _vpn_location_cache_time >= 300 || !$#_vpn_location_cache )); then
+        _vpn_location_cache=("${{(@f)$(vpn completion zsh --candidates locations 2>/dev/null)}}")
+        _vpn_location_cache_time=$SECONDS
+    fi
+
+    _describe 'location' _vpn_location_cache
+}}
+
 _vpn() {{
     local -a commands
+    local context state state_descr line
+    typeset -A opt_args
 
     commands=(
 {commands}
@@ -156,6 +217,11 @@ _vpn() {{
 {cases_text}
         *) _arguments '-h[Show help]' '--help[Show help]' ;;
     esac
+
+    case "$state" in
+        countries) _vpn_complete_countries ;;
+        locations) _vpn_complete_locations ;;
+    esac
 }}
 
 compdef _vpn vpn
@@ -163,6 +229,11 @@ compdef _vpn vpn
 
 
 def run(args: Namespace) -> int:
+    candidates = getattr(args, "candidates", None)
+
+    if candidates:
+        return print_completion_candidates(candidates)
+
     script = bash_completion() if args.shell == "bash" else zsh_completion()
     print(script, end="")
     return 0
@@ -178,6 +249,12 @@ def register(subparsers) -> None:
         "shell",
         choices=("bash", "zsh"),
         help="Shell syntax to generate",
+    )
+
+    parser.add_argument(
+        "--candidates",
+        choices=("countries", "locations"),
+        help=argparse.SUPPRESS,
     )
 
     parser.set_defaults(func=run)

@@ -10,6 +10,7 @@ Added:
 - GitHub Actions CI for Python 3.10 through 3.13
 - automated sdist and wheel build artifacts
 - Bash and Zsh completion generation
+- dynamic Zsh completion for countries and VPN locations with caching
 
 Changed:
 

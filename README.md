@@ -139,6 +139,10 @@ fpath=(~/.local/share/zsh/site-functions $fpath)
 autoload -Uz compinit && compinit
 ```
 
+Zsh also completes country names, ISO codes, and VPN cities. Location data is
+cached for five minutes in the current shell session to avoid repeated ping
+measurements on every completion request.
+
 ## Tests
 
 Install the project in editable mode, then run the complete test suite:
