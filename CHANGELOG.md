@@ -7,6 +7,8 @@ Added:
 - JSON output for `status`, `locations`, and `fastest`
 - active-location extraction from AdGuard VPN status output
 - dedicated parser for the fixed-width AdGuard VPN location table
+- GitHub Actions CI for Python 3.10 through 3.13
+- automated sdist and wheel build artifacts
 
 Changed:
 

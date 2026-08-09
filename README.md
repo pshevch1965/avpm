@@ -1,5 +1,7 @@
 # AVPM
 
+[![CI](https://github.com/pshevch1965/avpm/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/pshevch1965/avpm/actions/workflows/ci.yml)
+
 AVPM (AdGuard VPN Manager) is a Python command-line manager for
 `adguardvpn-cli` on Linux.
 
@@ -36,6 +38,7 @@ vpn doctor
 | --- | --- |
 | `vpn status` | Show the raw AdGuard VPN connection status |
 | `vpn status --quiet` | Return `0` when connected and `1` otherwise, without output |
+| `vpn status --json` | Show structured connection status |
 | `vpn locations` | List VPN locations |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
@@ -93,6 +96,17 @@ vpn reconnect --if-needed --fastest --country EE
 ```bash
 vpn status --quiet || vpn reconnect --if-needed
 ```
+
+Structured output is available for integrations and future GUI clients:
+
+```bash
+vpn status --json
+vpn locations --json
+vpn locations --country DE --json
+vpn fastest 5 --json
+```
+
+`status --quiet` and `status --json` are mutually exclusive.
 
 ## Tests
 
