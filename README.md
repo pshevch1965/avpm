@@ -46,6 +46,7 @@ vpn doctor
 | `vpn reconnect [location]` | Reconnect to the last or specified location |
 | `vpn doctor` | Check Python, system, and AdGuard CLI availability |
 | `vpn help` | Show the complete command list |
+| `vpn completion bash|zsh` | Generate shell completion |
 
 The shorter `vpn on` and `vpn off` aliases are also available.
 
@@ -107,6 +108,36 @@ vpn fastest 5 --json
 ```
 
 `status --quiet` and `status --json` are mutually exclusive.
+
+## Shell completion
+
+Enable completion for the current Bash session:
+
+```bash
+source <(vpn completion bash)
+```
+
+Install Bash completion permanently:
+
+```bash
+mkdir -p ~/.local/share/bash-completion/completions
+vpn completion bash > ~/.local/share/bash-completion/completions/vpn
+```
+
+Enable completion for the current Zsh session:
+
+```zsh
+source <(vpn completion zsh)
+```
+
+Install Zsh completion permanently:
+
+```zsh
+mkdir -p ~/.local/share/zsh/site-functions
+vpn completion zsh > ~/.local/share/zsh/site-functions/_vpn
+fpath=(~/.local/share/zsh/site-functions $fpath)
+autoload -Uz compinit && compinit
+```
 
 ## Tests
 

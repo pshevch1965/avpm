@@ -9,6 +9,7 @@ Added:
 - dedicated parser for the fixed-width AdGuard VPN location table
 - GitHub Actions CI for Python 3.10 through 3.13
 - automated sdist and wheel build artifacts
+- Bash and Zsh completion generation
 
 Changed:
 
