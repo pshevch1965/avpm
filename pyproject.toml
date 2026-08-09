@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "avpm"
-version = "0.3.0-alpha3"
+version = "0.4.0-alpha4"
 description = "AdGuard VPN Manager for Linux"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -26,3 +26,4 @@ vpn = "avpm.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+exclude = ["avpm.drivers*", "avpm.uint*"]

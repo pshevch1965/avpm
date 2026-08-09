@@ -14,6 +14,7 @@ from avpm.commands.off import register as register_off
 from avpm.commands.locations import register as register_locations
 from avpm.commands.doctor import register as register_doctor
 from avpm.commands.connect import register as register_connect
+from avpm.commands.completion import register as register_completion
 from avpm.commands.disconnect import register as register_disconnect
 from avpm.commands.reconnect import register as register_reconnect
 from avpm.commands.fastest import register as register_fastest
@@ -42,6 +43,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_disconnect(subparsers)
     register_reconnect(subparsers)
     register_fastest(subparsers)
+    register_completion(subparsers)
 
     return parser
 

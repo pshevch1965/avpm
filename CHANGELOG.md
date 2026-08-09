@@ -1,5 +1,28 @@
 # Changelog
 
+## Unreleased
+
+## 0.4.0-alpha4
+
+Added:
+
+- JSON output for `status`, `locations`, and `fastest`
+- active-location extraction from AdGuard VPN status output
+- dedicated parser for the fixed-width AdGuard VPN location table
+- GitHub Actions CI for Python 3.10 through 3.13
+- automated sdist and wheel build artifacts
+- Bash and Zsh completion generation
+- dynamic Bash and Zsh completion for countries and VPN locations with caching
+
+Changed:
+
+- location parsing now validates ISO codes and ignores malformed rows
+
+Removed:
+
+- obsolete `drivers` implementation superseded by `backends`
+- legacy `uint` package from the early UI refactor
+
 ## 0.3.0-alpha3
 
 Added:

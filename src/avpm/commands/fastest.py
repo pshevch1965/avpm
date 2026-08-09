@@ -1,9 +1,10 @@
 from argparse import ArgumentParser, Namespace
+from dataclasses import asdict
 
 from avpm.backends.adguard import AdGuardBackend
 from avpm.exceptions import BackendError
 from avpm.services.locations import filter_locations, sort_by_ping
-from avpm.ui import print_locations
+from avpm.ui import print_json, print_locations
 
 
 def run(args: Namespace) -> int:
@@ -22,6 +23,12 @@ def run(args: Namespace) -> int:
         )
     )
 
+    locations = locations[:args.count]
+
+    if args.json:
+        print_json([asdict(location) for location in locations])
+        return 0
+
     if not locations:
         print("No VPN locations matched filters.")
         return 0
@@ -34,7 +41,7 @@ def run(args: Namespace) -> int:
         title += f" in {args.country}"
 
     print_locations(
-        locations[:limit],
+        locations,
         title=title,
     )
 
@@ -59,6 +66,12 @@ def register(subparsers) -> None:
         "-c",
         "--country",
         help="Filter by country name or ISO code",
+    )
+
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print locations as JSON",
     )
 
     parser.set_defaults(func=run)

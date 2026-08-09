@@ -18,14 +18,20 @@ class AdGuardBackendStatusTests(unittest.TestCase):
         run_mock.return_value = subprocess.CompletedProcess(
             args=["adguardvpn-cli", "status"],
             returncode=0,
-            stdout="Connected to KYIV in TUN mode, running on tun0\n",
+            stdout=(
+                "Connected to \x1b[1mKYIV\x1b[0m in "
+                "\x1b[1mTUN\x1b[0m mode, running on "
+                "\x1b[1mtun0\x1b[0m\n"
+            ),
             stderr="",
         )
 
         status = self.backend.status()
 
         self.assertTrue(status.connected)
+        self.assertEqual(status.location, "KYIV")
         self.assertIn("KYIV", status.raw)
+        self.assertNotIn("\x1b", status.raw)
 
     @patch.object(AdGuardBackend, "exists", return_value=True)
     @patch.object(AdGuardBackend, "_run")
@@ -40,6 +46,7 @@ class AdGuardBackendStatusTests(unittest.TestCase):
         status = self.backend.status()
 
         self.assertFalse(status.connected)
+        self.assertIsNone(status.location)
 
     @patch.object(AdGuardBackend, "exists", return_value=True)
     @patch.object(AdGuardBackend, "_run")

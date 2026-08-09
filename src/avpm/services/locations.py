@@ -1,6 +1,50 @@
 from __future__ import annotations
 
+import re
+
 from avpm.models import Location
+from avpm.utils.text import strip_ansi
+
+
+ISO_CODE = re.compile(r"^[A-Z]{2}$", re.IGNORECASE)
+
+
+def parse_locations(output: str) -> list[Location]:
+    """Parse the fixed-width table returned by AdGuard VPN CLI."""
+    locations: list[Location] = []
+
+    for line in strip_ansi(output).splitlines():
+        line = line.rstrip()
+
+        if not line or line.startswith("ISO"):
+            continue
+
+        if line.startswith("You can connect"):
+            break
+
+        iso = line[0:6].strip()
+        country = line[6:27].strip()
+        city = line[27:58].strip()
+        ping_text = line[58:].strip()
+
+        if not ISO_CODE.fullmatch(iso) or not country or not city:
+            continue
+
+        try:
+            ping = int(ping_text)
+        except ValueError:
+            ping = None
+
+        locations.append(
+            Location(
+                iso=iso.upper(),
+                country=country,
+                city=city,
+                ping=ping,
+            )
+        )
+
+    return locations
 
 
 def filter_locations(

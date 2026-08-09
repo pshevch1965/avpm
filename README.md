@@ -1,9 +1,11 @@
 # AVPM
 
+[![CI](https://github.com/pshevch1965/avpm/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/pshevch1965/avpm/actions/workflows/ci.yml)
+
 AVPM (AdGuard VPN Manager) is a Python command-line manager for
 `adguardvpn-cli` on Linux.
 
-Current version: **0.3.0-alpha3**
+Current version: **0.4.0-alpha4**
 
 ## Requirements
 
@@ -36,6 +38,7 @@ vpn doctor
 | --- | --- |
 | `vpn status` | Show the raw AdGuard VPN connection status |
 | `vpn status --quiet` | Return `0` when connected and `1` otherwise, without output |
+| `vpn status --json` | Show structured connection status |
 | `vpn locations` | List VPN locations |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
@@ -43,6 +46,7 @@ vpn doctor
 | `vpn reconnect [location]` | Reconnect to the last or specified location |
 | `vpn doctor` | Check Python, system, and AdGuard CLI availability |
 | `vpn help` | Show the complete command list |
+| `vpn completion bash|zsh` | Generate shell completion |
 
 The shorter `vpn on` and `vpn off` aliases are also available.
 
@@ -93,6 +97,51 @@ vpn reconnect --if-needed --fastest --country EE
 ```bash
 vpn status --quiet || vpn reconnect --if-needed
 ```
+
+Structured output is available for integrations and future GUI clients:
+
+```bash
+vpn status --json
+vpn locations --json
+vpn locations --country DE --json
+vpn fastest 5 --json
+```
+
+`status --quiet` and `status --json` are mutually exclusive.
+
+## Shell completion
+
+Enable completion for the current Bash session:
+
+```bash
+source <(vpn completion bash)
+```
+
+Install Bash completion permanently:
+
+```bash
+mkdir -p ~/.local/share/bash-completion/completions
+vpn completion bash > ~/.local/share/bash-completion/completions/vpn
+```
+
+Enable completion for the current Zsh session:
+
+```zsh
+source <(vpn completion zsh)
+```
+
+Install Zsh completion permanently:
+
+```zsh
+mkdir -p ~/.local/share/zsh/site-functions
+vpn completion zsh > ~/.local/share/zsh/site-functions/_vpn
+fpath=(~/.local/share/zsh/site-functions $fpath)
+autoload -Uz compinit && compinit
+```
+
+Bash and Zsh also complete country names, ISO codes, and VPN cities. Location
+data is cached for five minutes in the current shell session to avoid repeated
+ping measurements on every completion request.
 
 ## Tests
 
