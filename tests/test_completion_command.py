@@ -22,6 +22,12 @@ class CompletionCommandTests(unittest.TestCase):
         self.assertIn("complete -F _vpn_completion vpn", script)
         self.assertIn("--if-needed", script)
         self.assertIn("--json", script)
+        self.assertIn("_vpn_country_cache_time=-300", script)
+        self.assertIn("_vpn_refresh_location_cache", script)
+        self.assertIn(
+            "vpn completion bash --candidates countries",
+            script,
+        )
 
     def test_generates_zsh_completion(self) -> None:
         output = StringIO()

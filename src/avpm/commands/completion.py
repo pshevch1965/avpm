@@ -124,8 +124,57 @@ def bash_completion() -> str:
     )
 
     return f"""\
+_vpn_country_cache=()
+_vpn_location_cache=()
+_vpn_country_cache_time=-300
+_vpn_location_cache_time=-300
+
+_vpn_refresh_country_cache() {{
+    if (( SECONDS - _vpn_country_cache_time < 300 && ${{#_vpn_country_cache[@]}} )); then
+        return
+    fi
+
+    _vpn_country_cache=()
+    local candidate
+
+    while IFS= read -r candidate; do
+        _vpn_country_cache+=("${{candidate%%:*}}")
+    done < <(vpn completion bash --candidates countries 2>/dev/null)
+
+    _vpn_country_cache_time=$SECONDS
+}}
+
+_vpn_refresh_location_cache() {{
+    if (( SECONDS - _vpn_location_cache_time < 300 && ${{#_vpn_location_cache[@]}} )); then
+        return
+    fi
+
+    _vpn_location_cache=()
+    local candidate
+
+    while IFS= read -r candidate; do
+        _vpn_location_cache+=("${{candidate%%:*}}")
+    done < <(vpn completion bash --candidates locations 2>/dev/null)
+
+    _vpn_location_cache_time=$SECONDS
+}}
+
+_vpn_complete_values() {{
+    local current="$1"
+    shift
+    local candidate
+
+    COMPREPLY=()
+
+    for candidate in "$@"; do
+        if [[ $candidate == "$current"* ]]; then
+            COMPREPLY+=("$candidate")
+        fi
+    done
+}}
+
 _vpn_completion() {{
-    local current options
+    local command current options previous
     COMPREPLY=()
     current="${{COMP_WORDS[COMP_CWORD]}}"
 
@@ -134,7 +183,28 @@ _vpn_completion() {{
         return 0
     fi
 
-    case "${{COMP_WORDS[1]}}" in
+    command="${{COMP_WORDS[1]}}"
+    previous="${{COMP_WORDS[COMP_CWORD - 1]}}"
+
+    if [[ $previous == -c || $previous == --country ]]; then
+        _vpn_refresh_country_cache
+        _vpn_complete_values "$current" "${{_vpn_country_cache[@]}}"
+        return 0
+    fi
+
+    if [[ $previous == -l || $previous == --location ]]; then
+        _vpn_refresh_location_cache
+        _vpn_complete_values "$current" "${{_vpn_location_cache[@]}}"
+        return 0
+    fi
+
+    if [[ $COMP_CWORD -eq 2 && ($command == connect || $command == reconnect) && $current != -* ]]; then
+        _vpn_refresh_location_cache
+        _vpn_complete_values "$current" "${{_vpn_location_cache[@]}}"
+        return 0
+    fi
+
+    case "$command" in
 {cases}
         *) options="-h --help" ;;
     esac
