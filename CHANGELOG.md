@@ -12,6 +12,11 @@ Changed:
 
 - location parsing now validates ISO codes and ignores malformed rows
 
+Removed:
+
+- obsolete `drivers` implementation superseded by `backends`
+- legacy `uint` package from the early UI refactor
+
 ## 0.3.0-alpha3
 
 Added:

@@ -26,3 +26,4 @@ vpn = "avpm.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+exclude = ["avpm.drivers*", "avpm.uint*"]
