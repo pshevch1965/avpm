@@ -63,6 +63,21 @@ OPTION_DESCRIPTIONS = {
     "zsh": "Generate Zsh completion",
 }
 
+ZSH_VALUE_ARGUMENTS = {
+    "-l": ":location:",
+    "--location": ":location:",
+    "-c": ":country:",
+    "--country": ":country:",
+    "--max-ping": ":milliseconds:",
+}
+
+ZSH_POSITIONAL_ARGUMENTS = {
+    "connect": "1:location:",
+    "reconnect": "1:location:",
+    "fastest": "1:count:",
+    "completion": "1:shell:(bash zsh)",
+}
+
 
 def bash_completion() -> str:
     commands = " ".join(("-h", "--help", *COMMANDS))
@@ -99,19 +114,30 @@ def zsh_completion() -> str:
         f"        '{command}:{description}'"
         for command, description in COMMANDS.items()
     )
-    cases = "\n".join(
-        "        "
-        f"{command}) options=("
-        f"{' '.join(repr(f'{option}:{OPTION_DESCRIPTIONS[option]}') for option in options)}"
-        ") ;;"
-        for command, options in OPTIONS.items()
-    )
+    cases = []
+
+    for command, options in OPTIONS.items():
+        specs = [
+            f"{option}[{OPTION_DESCRIPTIONS[option]}]"
+            f"{ZSH_VALUE_ARGUMENTS.get(option, '')}"
+            for option in options
+            if option.startswith("-")
+        ]
+        positional = ZSH_POSITIONAL_ARGUMENTS.get(command)
+
+        if positional:
+            specs.append(positional)
+
+        arguments = " ".join(repr(spec) for spec in specs)
+        cases.append(f"        {command}) _arguments {arguments} ;;")
+
+    cases_text = "\n".join(cases)
 
     return f"""\
 #compdef vpn
 
 _vpn() {{
-    local -a commands options
+    local -a commands
 
     commands=(
 {commands}
@@ -122,13 +148,14 @@ _vpn() {{
         return
     fi
 
-    case "$words[2]" in
-{cases}
-        *) options=('-h' '--help') ;;
-    esac
+    local command="$words[2]"
+    words=("${{words[@]:1}}")
+    (( CURRENT-- ))
 
-    _describe 'option' options
-    return 0
+    case "$command" in
+{cases_text}
+        *) _arguments '-h[Show help]' '--help[Show help]' ;;
+    esac
 }}
 
 compdef _vpn vpn

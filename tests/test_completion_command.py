@@ -31,8 +31,12 @@ class CompletionCommandTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertTrue(script.startswith("#compdef vpn"))
         self.assertIn("'completion:Generate shell completion'", script)
-        self.assertIn("--country:Filter by country", script)
-        self.assertIn("_describe 'option' options", script)
+        self.assertIn("'--help[Show help]'", script)
+        self.assertIn("'--country[Filter by country]:country:'", script)
+        self.assertIn("'1:shell:(bash zsh)'", script)
+        self.assertIn("locations) _arguments", script)
+        self.assertIn('words=("${words[@]:1}")', script)
+        self.assertIn("(( CURRENT-- ))", script)
 
 
 if __name__ == "__main__":
