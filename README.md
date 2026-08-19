@@ -41,6 +41,7 @@ vpn doctor
 | `vpn status --json` | Show structured connection status |
 | `vpn toggle` | Connect when disconnected, or disconnect when connected |
 | `vpn locations` | List VPN locations |
+| `vpn find QUERY` | Search locations by ISO code, country, or city |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
 | `vpn disconnect` | Disconnect the VPN |
@@ -66,6 +67,15 @@ Show the fastest locations inside one country:
 
 ```bash
 vpn fastest 5 --country DE
+```
+
+Search across ISO codes, country names, and city names:
+
+```bash
+vpn find est
+vpn find berlin
+vpn find united --max-ping 200
+vpn find tallinn --json
 ```
 
 ## Fastest connection

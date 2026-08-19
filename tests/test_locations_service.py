@@ -6,6 +6,7 @@ from avpm.models import Location
 from avpm.services.locations import (
     fastest_location,
     filter_locations,
+    search_locations,
     sort_by_ping,
 )
 
@@ -48,6 +49,50 @@ class FilterLocationsTests(unittest.TestCase):
         )
 
         self.assertEqual([location.city for location in result], ["Berlin"])
+
+
+class SearchLocationsTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.locations = [
+            Location("DE", "Germany", "Berlin", 42),
+            Location("EE", "Estonia", "Tallinn", 18),
+            Location("US", "United States", "New York", 120),
+            Location("RO", "Romania", "Bucharest", 39),
+            Location("HU", "Hungary", "Budapest", 42),
+            Location("GB", "United Kingdom", "Manchester", 77),
+        ]
+
+    def test_searches_iso_country_and_city(self) -> None:
+        self.assertEqual(
+            [item.city for item in search_locations(self.locations, "EE")],
+            ["Tallinn"],
+        )
+        self.assertEqual(
+            [item.city for item in search_locations(self.locations, "united")],
+            ["New York", "Manchester"],
+        )
+        self.assertEqual(
+            [item.city for item in search_locations(self.locations, "berl")],
+            ["Berlin"],
+        )
+
+    def test_search_is_case_insensitive(self) -> None:
+        result = search_locations(self.locations, "TALL")
+
+        self.assertEqual([item.city for item in result], ["Tallinn"])
+
+    def test_returns_empty_list_without_matches(self) -> None:
+        self.assertEqual(search_locations(self.locations, "missing"), [])
+
+    def test_does_not_match_inside_words(self) -> None:
+        result = search_locations(self.locations, "est")
+
+        self.assertEqual([item.city for item in result], ["Tallinn"])
+
+    def test_matches_beginning_of_later_word(self) -> None:
+        result = search_locations(self.locations, "york")
+
+        self.assertEqual([item.city for item in result], ["New York"])
 
 
 class SortByPingTests(unittest.TestCase):

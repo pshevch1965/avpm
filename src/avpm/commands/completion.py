@@ -21,6 +21,7 @@ COMMANDS = {
     "disconnect": "Disconnect VPN",
     "reconnect": "Reconnect VPN",
     "fastest": "Show fastest VPN locations",
+    "find": "Search VPN locations",
     "completion": "Generate shell completion",
 }
 
@@ -47,6 +48,7 @@ OPTIONS = {
         "--if-needed",
     ),
     "fastest": ("-h", "--help", "-c", "--country", "--json"),
+    "find": ("-h", "--help", "--max-ping", "--json"),
     "completion": ("-h", "--help", "bash", "zsh"),
 }
 
@@ -80,6 +82,7 @@ ZSH_POSITIONAL_ARGUMENTS = {
     "connect": "1:location:->locations",
     "reconnect": "1:location:->locations",
     "fastest": "1:count:",
+    "find": "1:query:",
     "completion": "1:shell:(bash zsh)",
 }
 
