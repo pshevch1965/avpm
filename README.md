@@ -46,6 +46,7 @@ vpn doctor
 | `vpn health` | Check VPN state, tunnel interface, and public IP |
 | `vpn support` | Create a privacy-conscious diagnostic archive |
 | `vpn watch` | Monitor VPN status continuously |
+| `vpn config` | Manage persistent AVPM settings |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
 | `vpn disconnect` | Disconnect the VPN |
@@ -118,6 +119,18 @@ Watch the VPN state until `Ctrl+C`, or limit the number of updates:
 vpn watch
 vpn watch --interval 1 --count 10
 vpn watch --count 3 --json
+```
+
+Manage persistent configuration stored under the XDG config directory:
+
+```bash
+vpn config show
+vpn config set default_country EE
+vpn config set watch_interval 1.5
+vpn config set output_format json
+vpn config get default_country
+vpn config unset default_country
+vpn config path
 ```
 
 ## Fastest connection

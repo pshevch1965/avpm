@@ -10,6 +10,7 @@ Added:
 - `health` command for VPN, tunnel-interface, and public-IP checks
 - privacy-conscious `support` archives with optional raw AdGuard VPN logs
 - `watch` command with configurable refresh interval and JSON Lines output
+- persistent XDG configuration with validated settings and atomic writes
 
 Changed:
 

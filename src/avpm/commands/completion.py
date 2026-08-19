@@ -26,6 +26,7 @@ COMMANDS = {
     "health": "Check VPN connection health",
     "support": "Create a diagnostic support archive",
     "watch": "Watch VPN connection status",
+    "config": "Manage AVPM configuration",
     "completion": "Generate shell completion",
 }
 
@@ -57,6 +58,19 @@ OPTIONS = {
     "health": ("-h", "--help", "--json"),
     "support": ("-h", "--help", "-o", "--output", "--include-logs"),
     "watch": ("-h", "--help", "-i", "--interval", "-n", "--count", "--json"),
+    "config": (
+        "-h",
+        "--help",
+        "--json",
+        "show",
+        "get",
+        "set",
+        "unset",
+        "path",
+        "default_country",
+        "watch_interval",
+        "output_format",
+    ),
     "completion": ("-h", "--help", "bash", "zsh"),
 }
 
@@ -100,11 +114,16 @@ ZSH_VALUE_ARGUMENTS = {
 }
 
 ZSH_POSITIONAL_ARGUMENTS = {
-    "connect": "1:location:->locations",
-    "reconnect": "1:location:->locations",
-    "fastest": "1:count:",
-    "find": "1:query:",
-    "completion": "1:shell:(bash zsh)",
+    "connect": ("1:location:->locations",),
+    "reconnect": ("1:location:->locations",),
+    "fastest": ("1:count:",),
+    "find": ("1:query:",),
+    "completion": ("1:shell:(bash zsh)",),
+    "config": (
+        "1:action:(show get set unset path)",
+        "2:key:(default_country watch_interval output_format)",
+        "3:value:",
+    ),
 }
 
 
@@ -264,7 +283,7 @@ def zsh_completion() -> str:
         positional = ZSH_POSITIONAL_ARGUMENTS.get(command)
 
         if positional:
-            specs.append(positional)
+            specs.extend(positional)
 
         arguments = " ".join(repr(spec) for spec in specs)
         cases.append(f"        {command}) _arguments {arguments} ;;")

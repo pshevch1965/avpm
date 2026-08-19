@@ -19,3 +19,7 @@ class NetworkError(AvpmError):
 
 class SupportError(AvpmError):
     """Support archive creation failed."""
+
+
+class ConfigError(AvpmError):
+    """Configuration is invalid or cannot be saved."""
