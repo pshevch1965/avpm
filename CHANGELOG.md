@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.5.0-alpha5
+
 Added:
 
 - `toggle` command for switching the VPN connection state
