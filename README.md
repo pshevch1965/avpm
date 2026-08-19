@@ -133,6 +133,16 @@ vpn config unset default_country
 vpn config path
 ```
 
+The settings are used automatically: `default_country` limits `fastest` and
+fastest connections, `watch_interval` controls `watch`, and `output_format`
+selects text or JSON output. Explicit command-line options take precedence:
+
+```bash
+vpn fastest 3 --country DE --text
+vpn health --json
+vpn watch --interval 1 --text
+```
+
 ## Fastest connection
 
 Connect to the globally fastest location:

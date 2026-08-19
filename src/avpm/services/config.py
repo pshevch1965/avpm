@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import tempfile
+from argparse import Namespace
 from pathlib import Path
 
 from avpm.exceptions import ConfigError
@@ -12,6 +13,16 @@ DEFAULT_CONFIG: dict[str, object] = {
     "default_country": None,
     "watch_interval": 2.0,
     "output_format": "text",
+}
+
+JSON_COMMANDS = {
+    "status",
+    "locations",
+    "fastest",
+    "find",
+    "ip",
+    "health",
+    "watch",
 }
 
 
@@ -91,6 +102,42 @@ def load_overrides(path: Path | None = None) -> dict[str, object]:
 
 def load_config(path: Path | None = None) -> dict[str, object]:
     return {**DEFAULT_CONFIG, **load_overrides(path)}
+
+
+def apply_runtime_config(args: Namespace) -> None:
+    command = getattr(args, "command", None)
+
+    if command == "config":
+        return
+
+    uses_config = command in JSON_COMMANDS or command in {
+        "connect",
+        "reconnect",
+    }
+
+    if not uses_config:
+        return
+
+    config = load_config()
+
+    if command in JSON_COMMANDS and not getattr(args, "quiet", False):
+        if getattr(args, "text", False):
+            args.json = False
+        elif not getattr(args, "json", False):
+            args.json = config["output_format"] == "json"
+
+    if command == "watch" and args.interval is None:
+        args.interval = config["watch_interval"]
+
+    if command == "fastest" and args.country is None:
+        args.country = config["default_country"]
+
+    if (
+        command in {"connect", "reconnect"}
+        and args.fastest
+        and args.country is None
+    ):
+        args.country = config["default_country"]
 
 
 def save_overrides(

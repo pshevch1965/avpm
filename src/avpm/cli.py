@@ -25,6 +25,8 @@ from avpm.commands.health import register as register_health
 from avpm.commands.support import register as register_support
 from avpm.commands.watch import register as register_watch
 from avpm.commands.config import register as register_config
+from avpm.services.config import apply_runtime_config
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -72,6 +74,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
+        apply_runtime_config(args)
         return args.func(args)
     except AvpmError as exc:
         print(f"ERROR: {exc}")

@@ -108,8 +108,8 @@ def register(subparsers) -> None:
         "-i",
         "--interval",
         type=positive_float,
-        default=2.0,
-        help="Refresh interval in seconds (default: 2)",
+        default=None,
+        help="Refresh interval in seconds",
     )
 
     parser.add_argument(
@@ -119,10 +119,18 @@ def register(subparsers) -> None:
         help="Stop after this many updates",
     )
 
-    parser.add_argument(
+    output_group = parser.add_mutually_exclusive_group()
+
+    output_group.add_argument(
         "--json",
         action="store_true",
         help="Print newline-delimited JSON",
+    )
+
+    output_group.add_argument(
+        "--text",
+        action="store_true",
+        help="Force plain-text output",
     )
 
     parser.set_defaults(func=run)

@@ -94,10 +94,18 @@ def register(subparsers) -> None:
         help="Check VPN connection health",
     )
 
-    parser.add_argument(
+    output_group = parser.add_mutually_exclusive_group()
+
+    output_group.add_argument(
         "--json",
         action="store_true",
         help="Print health report as JSON",
+    )
+
+    output_group.add_argument(
+        "--text",
+        action="store_true",
+        help="Force plain-text output",
     )
 
     parser.set_defaults(func=run)

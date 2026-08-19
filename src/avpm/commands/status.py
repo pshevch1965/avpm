@@ -62,4 +62,10 @@ def register(subparsers) -> None:
         help="Print status as JSON",
     )
 
+    output_group.add_argument(
+        "--text",
+        action="store_true",
+        help="Force plain-text output",
+    )
+
     parser.set_defaults(func=run)

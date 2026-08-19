@@ -15,6 +15,8 @@ Added:
 Changed:
 
 - JSON status output now includes the active tunnel interface
+- persistent settings now provide runtime defaults for country, watch interval,
+  and output format; `--text` and `--json` override the configured format
 
 ## 0.4.0-alpha4
 

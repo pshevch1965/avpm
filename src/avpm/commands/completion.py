@@ -31,7 +31,7 @@ COMMANDS = {
 }
 
 OPTIONS = {
-    "status": ("-h", "--help", "-q", "--quiet", "--json"),
+    "status": ("-h", "--help", "-q", "--quiet", "--json", "--text"),
     "toggle": ("-h", "--help"),
     "on": ("-h", "--help", "-l", "--location"),
     "locations": (
@@ -41,6 +41,7 @@ OPTIONS = {
         "--country",
         "--max-ping",
         "--json",
+        "--text",
     ),
     "connect": ("-h", "--help", "-f", "--fastest", "-c", "--country"),
     "reconnect": (
@@ -52,12 +53,21 @@ OPTIONS = {
         "--country",
         "--if-needed",
     ),
-    "fastest": ("-h", "--help", "-c", "--country", "--json"),
-    "find": ("-h", "--help", "--max-ping", "--json"),
-    "ip": ("-h", "--help", "--json"),
-    "health": ("-h", "--help", "--json"),
+    "fastest": ("-h", "--help", "-c", "--country", "--json", "--text"),
+    "find": ("-h", "--help", "--max-ping", "--json", "--text"),
+    "ip": ("-h", "--help", "--json", "--text"),
+    "health": ("-h", "--help", "--json", "--text"),
     "support": ("-h", "--help", "-o", "--output", "--include-logs"),
-    "watch": ("-h", "--help", "-i", "--interval", "-n", "--count", "--json"),
+    "watch": (
+        "-h",
+        "--help",
+        "-i",
+        "--interval",
+        "-n",
+        "--count",
+        "--json",
+        "--text",
+    ),
     "config": (
         "-h",
         "--help",
@@ -80,6 +90,7 @@ OPTION_DESCRIPTIONS = {
     "-q": "Return connection state as exit code",
     "--quiet": "Return connection state as exit code",
     "--json": "Print JSON output",
+    "--text": "Force plain-text output",
     "-l": "Select VPN location",
     "--location": "Select VPN location",
     "-c": "Filter by country",
