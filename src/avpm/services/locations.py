@@ -74,6 +74,41 @@ def filter_locations(
     ]
 
 
+def search_locations(
+    locations: list[Location],
+    query: str,
+) -> list[Location]:
+    """Search locations by the beginning of any field or word."""
+    query_key = query.casefold().strip()
+
+    if not query_key:
+        return []
+
+    def matches(value: str) -> bool:
+        value_key = value.casefold()
+
+        return (
+            value_key.startswith(query_key)
+            or any(
+                word.startswith(query_key)
+                for word in re.findall(r"\w+", value_key)
+            )
+        )
+
+    return [
+        location
+        for location in locations
+        if any(
+            matches(value)
+            for value in (
+                location.iso,
+                location.country,
+                location.city,
+            )
+        )
+    ]
+
+
 def sort_by_ping(
     locations: list[Location],
 ) -> list[Location]:

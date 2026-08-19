@@ -9,6 +9,7 @@ class VPNStatus:
 
     connected: bool
     location: str | None = None
+    interface: str | None = None
     raw: str = ""
 
 

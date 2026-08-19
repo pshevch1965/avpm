@@ -11,3 +11,15 @@ class BackendError(AvpmError):
 
 class BackendNotFoundError(BackendError):
     """Backend executable not found."""
+
+
+class NetworkError(AvpmError):
+    """Network request failed."""
+
+
+class SupportError(AvpmError):
+    """Support archive creation failed."""
+
+
+class ConfigError(AvpmError):
+    """Configuration is invalid or cannot be saved."""

@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## 0.5.0-alpha5
+
+Added:
+
+- `toggle` command for switching the VPN connection state
+- `find` command for searching locations by ISO code, country, or city
+- `ip` command with plain-text and JSON output
+- `health` command for VPN, tunnel-interface, and public-IP checks
+- privacy-conscious `support` archives with optional raw AdGuard VPN logs
+- `watch` command with configurable refresh interval and JSON Lines output
+- persistent XDG configuration with validated settings and atomic writes
+
+Changed:
+
+- JSON status output now includes the active tunnel interface
+- persistent settings now provide runtime defaults for country, watch interval,
+  and output format; `--text` and `--json` override the configured format
+
 ## 0.4.0-alpha4
 
 Added:

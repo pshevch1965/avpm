@@ -11,6 +11,7 @@ COMMANDS = {
     "about": "About AVPM",
     "help": "Show help",
     "status": "Show VPN status",
+    "toggle": "Toggle VPN connection",
     "backend": "Show backend information",
     "on": "Connect VPN",
     "off": "Disconnect VPN",
@@ -20,11 +21,18 @@ COMMANDS = {
     "disconnect": "Disconnect VPN",
     "reconnect": "Reconnect VPN",
     "fastest": "Show fastest VPN locations",
+    "find": "Search VPN locations",
+    "ip": "Show public IP address",
+    "health": "Check VPN connection health",
+    "support": "Create a diagnostic support archive",
+    "watch": "Watch VPN connection status",
+    "config": "Manage AVPM configuration",
     "completion": "Generate shell completion",
 }
 
 OPTIONS = {
-    "status": ("-h", "--help", "-q", "--quiet", "--json"),
+    "status": ("-h", "--help", "-q", "--quiet", "--json", "--text"),
+    "toggle": ("-h", "--help"),
     "on": ("-h", "--help", "-l", "--location"),
     "locations": (
         "-h",
@@ -33,6 +41,7 @@ OPTIONS = {
         "--country",
         "--max-ping",
         "--json",
+        "--text",
     ),
     "connect": ("-h", "--help", "-f", "--fastest", "-c", "--country"),
     "reconnect": (
@@ -44,7 +53,34 @@ OPTIONS = {
         "--country",
         "--if-needed",
     ),
-    "fastest": ("-h", "--help", "-c", "--country", "--json"),
+    "fastest": ("-h", "--help", "-c", "--country", "--json", "--text"),
+    "find": ("-h", "--help", "--max-ping", "--json", "--text"),
+    "ip": ("-h", "--help", "--json", "--text"),
+    "health": ("-h", "--help", "--json", "--text"),
+    "support": ("-h", "--help", "-o", "--output", "--include-logs"),
+    "watch": (
+        "-h",
+        "--help",
+        "-i",
+        "--interval",
+        "-n",
+        "--count",
+        "--json",
+        "--text",
+    ),
+    "config": (
+        "-h",
+        "--help",
+        "--json",
+        "show",
+        "get",
+        "set",
+        "unset",
+        "path",
+        "default_country",
+        "watch_interval",
+        "output_format",
+    ),
     "completion": ("-h", "--help", "bash", "zsh"),
 }
 
@@ -54,6 +90,7 @@ OPTION_DESCRIPTIONS = {
     "-q": "Return connection state as exit code",
     "--quiet": "Return connection state as exit code",
     "--json": "Print JSON output",
+    "--text": "Force plain-text output",
     "-l": "Select VPN location",
     "--location": "Select VPN location",
     "-c": "Filter by country",
@@ -62,6 +99,13 @@ OPTION_DESCRIPTIONS = {
     "-f": "Use fastest location",
     "--fastest": "Use fastest location",
     "--if-needed": "Connect only when disconnected",
+    "-o": "Set output archive path",
+    "--output": "Set output archive path",
+    "--include-logs": "Include raw AdGuard VPN logs",
+    "-i": "Set refresh interval",
+    "--interval": "Set refresh interval",
+    "-n": "Set update count",
+    "--count": "Set update count",
     "bash": "Generate Bash completion",
     "zsh": "Generate Zsh completion",
 }
@@ -72,13 +116,25 @@ ZSH_VALUE_ARGUMENTS = {
     "-c": ":country:->countries",
     "--country": ":country:->countries",
     "--max-ping": ":milliseconds:",
+    "-o": ":file:_files",
+    "--output": ":file:_files",
+    "-i": ":seconds:",
+    "--interval": ":seconds:",
+    "-n": ":updates:",
+    "--count": ":updates:",
 }
 
 ZSH_POSITIONAL_ARGUMENTS = {
-    "connect": "1:location:->locations",
-    "reconnect": "1:location:->locations",
-    "fastest": "1:count:",
-    "completion": "1:shell:(bash zsh)",
+    "connect": ("1:location:->locations",),
+    "reconnect": ("1:location:->locations",),
+    "fastest": ("1:count:",),
+    "find": ("1:query:",),
+    "completion": ("1:shell:(bash zsh)",),
+    "config": (
+        "1:action:(show get set unset path)",
+        "2:key:(default_country watch_interval output_format)",
+        "3:value:",
+    ),
 }
 
 
@@ -198,6 +254,11 @@ _vpn_completion() {{
         return 0
     fi
 
+    if [[ $previous == -o || $previous == --output ]]; then
+        COMPREPLY=( $(compgen -f -- "$current") )
+        return 0
+    fi
+
     if [[ $COMP_CWORD -eq 2 && ($command == connect || $command == reconnect) && $current != -* ]]; then
         _vpn_refresh_location_cache
         _vpn_complete_values "$current" "${{_vpn_location_cache[@]}}"
@@ -233,7 +294,7 @@ def zsh_completion() -> str:
         positional = ZSH_POSITIONAL_ARGUMENTS.get(command)
 
         if positional:
-            specs.append(positional)
+            specs.extend(positional)
 
         arguments = " ".join(repr(spec) for spec in specs)
         cases.append(f"        {command}) _arguments {arguments} ;;")

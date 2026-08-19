@@ -73,6 +73,7 @@ class StatusCommandTests(unittest.TestCase):
         backend_class.return_value.status.return_value = VPNStatus(
             connected=True,
             location="TALLINN",
+            interface="tun0",
             raw="Connected to TALLINN in TUN mode, running on tun0",
         )
         output = StringIO()
@@ -84,6 +85,7 @@ class StatusCommandTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertTrue(payload["connected"])
         self.assertEqual(payload["location"], "TALLINN")
+        self.assertEqual(payload["interface"], "tun0")
 
     @patch("avpm.commands.status.AdGuardBackend")
     def test_json_backend_error(self, backend_class) -> None:

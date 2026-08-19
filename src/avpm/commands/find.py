@@ -4,42 +4,37 @@ import argparse
 from dataclasses import asdict
 
 from avpm.backends.adguard import AdGuardBackend
-from avpm.services.locations import filter_locations
+from avpm.commands.locations import non_negative_int
+from avpm.services.locations import filter_locations, search_locations
 from avpm.ui import print_json, print_locations
 
 
 def run(args: argparse.Namespace) -> int:
     backend = AdGuardBackend()
-
-    locations = filter_locations(
-        backend.locations(),
-        country=args.country,
-        max_ping=args.max_ping,
-    )
+    locations = search_locations(backend.locations(), args.query)
+    locations = filter_locations(locations, max_ping=args.max_ping)
 
     if args.json:
         print_json([asdict(location) for location in locations])
         return 0
 
     if not locations:
-        print("No VPN locations matched filters.")
+        print("No VPN locations matched query.")
         return 0
 
     print_locations(locations)
-
     return 0
 
 
 def register(subparsers) -> None:
     parser = subparsers.add_parser(
-        "locations",
-        help="List VPN locations",
+        "find",
+        help="Search VPN locations",
     )
 
     parser.add_argument(
-        "-c",
-        "--country",
-        help="Filter by country name or ISO code",
+        "query",
+        help="ISO code, country, or city",
     )
 
     parser.add_argument(
@@ -63,12 +58,3 @@ def register(subparsers) -> None:
     )
 
     parser.set_defaults(func=run)
-
-
-def non_negative_int(value: str) -> int:
-    number = int(value)
-
-    if number < 0:
-        raise argparse.ArgumentTypeError("must be zero or greater")
-
-    return number

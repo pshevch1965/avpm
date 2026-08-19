@@ -7,6 +7,7 @@ from avpm.commands.about import register as register_about
 from avpm.commands.help import register as register_help
 from avpm.commands.version import register as register_version
 from avpm.commands.status import register as register_status
+from avpm.commands.toggle import register as register_toggle
 from avpm.exceptions import AvpmError
 from avpm.commands.backend import register as register_backend
 from avpm.commands.on import register as register_on
@@ -18,6 +19,14 @@ from avpm.commands.completion import register as register_completion
 from avpm.commands.disconnect import register as register_disconnect
 from avpm.commands.reconnect import register as register_reconnect
 from avpm.commands.fastest import register as register_fastest
+from avpm.commands.find import register as register_find
+from avpm.commands.ip import register as register_ip
+from avpm.commands.health import register as register_health
+from avpm.commands.support import register as register_support
+from avpm.commands.watch import register as register_watch
+from avpm.commands.config import register as register_config
+from avpm.services.config import apply_runtime_config
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -34,6 +43,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_about(subparsers)
     register_help(subparsers, parser)
     register_status(subparsers)
+    register_toggle(subparsers)
     register_backend(subparsers)
     register_on(subparsers)
     register_off(subparsers)
@@ -43,6 +53,12 @@ def build_parser() -> argparse.ArgumentParser:
     register_disconnect(subparsers)
     register_reconnect(subparsers)
     register_fastest(subparsers)
+    register_find(subparsers)
+    register_ip(subparsers)
+    register_health(subparsers)
+    register_support(subparsers)
+    register_watch(subparsers)
+    register_config(subparsers)
     register_completion(subparsers)
 
     return parser
@@ -58,6 +74,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
+        apply_runtime_config(args)
         return args.func(args)
     except AvpmError as exc:
         print(f"ERROR: {exc}")
