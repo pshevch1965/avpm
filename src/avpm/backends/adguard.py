@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+from pathlib import Path
 from avpm.backends.base import Backend
 from avpm.exceptions import BackendError, BackendNotFoundError
 from avpm.models import Location, VPNStatus
@@ -98,3 +99,28 @@ class AdGuardBackend(Backend):
             )
 
         return parse_locations(result.stdout)
+
+    def export_logs(self, output: Path) -> Path:
+        if not self.exists():
+            raise BackendNotFoundError(
+                f"'{self.executable}' was not found in PATH"
+            )
+
+        result = self._run(
+            "export-logs",
+            "-o",
+            str(output),
+            "-f",
+        )
+
+        if result.returncode != 0:
+            raise BackendError(
+                result.stderr.strip()
+                or result.stdout.strip()
+                or "Unable to export logs"
+            )
+
+        if not output.is_file():
+            raise BackendError("Exported log archive was not created")
+
+        return output

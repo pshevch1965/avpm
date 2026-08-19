@@ -24,6 +24,7 @@ COMMANDS = {
     "find": "Search VPN locations",
     "ip": "Show public IP address",
     "health": "Check VPN connection health",
+    "support": "Create a diagnostic support archive",
     "completion": "Generate shell completion",
 }
 
@@ -53,6 +54,7 @@ OPTIONS = {
     "find": ("-h", "--help", "--max-ping", "--json"),
     "ip": ("-h", "--help", "--json"),
     "health": ("-h", "--help", "--json"),
+    "support": ("-h", "--help", "-o", "--output", "--include-logs"),
     "completion": ("-h", "--help", "bash", "zsh"),
 }
 
@@ -70,6 +72,9 @@ OPTION_DESCRIPTIONS = {
     "-f": "Use fastest location",
     "--fastest": "Use fastest location",
     "--if-needed": "Connect only when disconnected",
+    "-o": "Set output archive path",
+    "--output": "Set output archive path",
+    "--include-logs": "Include raw AdGuard VPN logs",
     "bash": "Generate Bash completion",
     "zsh": "Generate Zsh completion",
 }
@@ -80,6 +85,8 @@ ZSH_VALUE_ARGUMENTS = {
     "-c": ":country:->countries",
     "--country": ":country:->countries",
     "--max-ping": ":milliseconds:",
+    "-o": ":file:_files",
+    "--output": ":file:_files",
 }
 
 ZSH_POSITIONAL_ARGUMENTS = {
@@ -204,6 +211,11 @@ _vpn_completion() {{
     if [[ $previous == -l || $previous == --location ]]; then
         _vpn_refresh_location_cache
         _vpn_complete_values "$current" "${{_vpn_location_cache[@]}}"
+        return 0
+    fi
+
+    if [[ $previous == -o || $previous == --output ]]; then
+        COMPREPLY=( $(compgen -f -- "$current") )
         return 0
     fi
 

@@ -8,6 +8,7 @@ Added:
 - `find` command for searching locations by ISO code, country, or city
 - `ip` command with plain-text and JSON output
 - `health` command for VPN, tunnel-interface, and public-IP checks
+- privacy-conscious `support` archives with optional raw AdGuard VPN logs
 
 Changed:
 

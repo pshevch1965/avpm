@@ -44,6 +44,7 @@ vpn doctor
 | `vpn find QUERY` | Search locations by ISO code, country, or city |
 | `vpn ip` | Show the current public IPv4 or IPv6 address |
 | `vpn health` | Check VPN state, tunnel interface, and public IP |
+| `vpn support` | Create a privacy-conscious diagnostic archive |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
 | `vpn disconnect` | Disconnect the VPN |
@@ -93,6 +94,21 @@ Check the complete connection health and use the exit code in scripts:
 vpn health
 vpn health --json
 vpn health >/dev/null || echo "VPN health check failed"
+```
+
+Create a diagnostic archive for troubleshooting:
+
+```bash
+vpn support
+vpn support --output ~/Downloads/avpm-support.zip
+```
+
+The default archive excludes the public IP address, username, home path,
+environment variables, and raw logs. Add raw AdGuard VPN logs only when they
+are needed, and review the archive before sharing it:
+
+```bash
+vpn support --include-logs
 ```
 
 ## Fastest connection

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from avpm.models import Location, VPNStatus
 
@@ -25,3 +26,6 @@ class Backend(ABC):
     def locations(self) -> list[Location]:
         """Return available VPN locations."""
 
+    @abstractmethod
+    def export_logs(self, output: Path) -> Path:
+        """Export backend logs to an archive."""

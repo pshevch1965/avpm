@@ -15,3 +15,7 @@ class BackendNotFoundError(BackendError):
 
 class NetworkError(AvpmError):
     """Network request failed."""
+
+
+class SupportError(AvpmError):
+    """Support archive creation failed."""

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import subprocess
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from avpm.backends.adguard import AdGuardBackend
@@ -66,6 +68,54 @@ class AdGuardBackendStatusTests(unittest.TestCase):
 
         with self.assertRaisesRegex(BackendError, "Status failed"):
             self.backend.status()
+
+
+class AdGuardBackendExportLogsTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.backend = AdGuardBackend()
+
+    @patch.object(AdGuardBackend, "exists", return_value=True)
+    @patch.object(AdGuardBackend, "_run")
+    def test_exports_logs(self, run_mock, exists_mock) -> None:
+        run_mock.return_value = subprocess.CompletedProcess(
+            args=[],
+            returncode=0,
+            stdout="Logs exported",
+            stderr="",
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "logs.zip"
+            output.write_bytes(b"logs")
+
+            result = self.backend.export_logs(output)
+
+        self.assertEqual(result, output)
+        run_mock.assert_called_once_with(
+            "export-logs",
+            "-o",
+            str(output),
+            "-f",
+        )
+
+    @patch.object(AdGuardBackend, "exists", return_value=True)
+    @patch.object(AdGuardBackend, "_run")
+    def test_reports_missing_export(self, run_mock, exists_mock) -> None:
+        run_mock.return_value = subprocess.CompletedProcess(
+            args=[],
+            returncode=0,
+            stdout="",
+            stderr="",
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "logs.zip"
+
+            with self.assertRaisesRegex(
+                BackendError,
+                "log archive was not created",
+            ):
+                self.backend.export_logs(output)
 
 
 if __name__ == "__main__":
