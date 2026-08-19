@@ -9,6 +9,7 @@ Added:
 - `ip` command with plain-text and JSON output
 - `health` command for VPN, tunnel-interface, and public-IP checks
 - privacy-conscious `support` archives with optional raw AdGuard VPN logs
+- `watch` command with configurable refresh interval and JSON Lines output
 
 Changed:
 

@@ -45,6 +45,7 @@ vpn doctor
 | `vpn ip` | Show the current public IPv4 or IPv6 address |
 | `vpn health` | Check VPN state, tunnel interface, and public IP |
 | `vpn support` | Create a privacy-conscious diagnostic archive |
+| `vpn watch` | Monitor VPN status continuously |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
 | `vpn disconnect` | Disconnect the VPN |
@@ -109,6 +110,14 @@ are needed, and review the archive before sharing it:
 
 ```bash
 vpn support --include-logs
+```
+
+Watch the VPN state until `Ctrl+C`, or limit the number of updates:
+
+```bash
+vpn watch
+vpn watch --interval 1 --count 10
+vpn watch --count 3 --json
 ```
 
 ## Fastest connection

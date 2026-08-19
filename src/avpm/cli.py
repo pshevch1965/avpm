@@ -23,6 +23,7 @@ from avpm.commands.find import register as register_find
 from avpm.commands.ip import register as register_ip
 from avpm.commands.health import register as register_health
 from avpm.commands.support import register as register_support
+from avpm.commands.watch import register as register_watch
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -53,6 +54,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_ip(subparsers)
     register_health(subparsers)
     register_support(subparsers)
+    register_watch(subparsers)
     register_completion(subparsers)
 
     return parser

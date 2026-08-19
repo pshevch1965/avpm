@@ -25,6 +25,7 @@ COMMANDS = {
     "ip": "Show public IP address",
     "health": "Check VPN connection health",
     "support": "Create a diagnostic support archive",
+    "watch": "Watch VPN connection status",
     "completion": "Generate shell completion",
 }
 
@@ -55,6 +56,7 @@ OPTIONS = {
     "ip": ("-h", "--help", "--json"),
     "health": ("-h", "--help", "--json"),
     "support": ("-h", "--help", "-o", "--output", "--include-logs"),
+    "watch": ("-h", "--help", "-i", "--interval", "-n", "--count", "--json"),
     "completion": ("-h", "--help", "bash", "zsh"),
 }
 
@@ -75,6 +77,10 @@ OPTION_DESCRIPTIONS = {
     "-o": "Set output archive path",
     "--output": "Set output archive path",
     "--include-logs": "Include raw AdGuard VPN logs",
+    "-i": "Set refresh interval",
+    "--interval": "Set refresh interval",
+    "-n": "Set update count",
+    "--count": "Set update count",
     "bash": "Generate Bash completion",
     "zsh": "Generate Zsh completion",
 }
@@ -87,6 +93,10 @@ ZSH_VALUE_ARGUMENTS = {
     "--max-ping": ":milliseconds:",
     "-o": ":file:_files",
     "--output": ":file:_files",
+    "-i": ":seconds:",
+    "--interval": ":seconds:",
+    "-n": ":updates:",
+    "--count": ":updates:",
 }
 
 ZSH_POSITIONAL_ARGUMENTS = {
