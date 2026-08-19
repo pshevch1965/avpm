@@ -5,7 +5,11 @@ from unittest.mock import MagicMock, patch
 from urllib.error import URLError
 
 from avpm.exceptions import NetworkError
-from avpm.services.network import PUBLIC_IP_URL, fetch_public_ip
+from avpm.services.network import (
+    PUBLIC_IP_URL,
+    fetch_public_ip,
+    interface_exists,
+)
 
 
 class FetchPublicIpTests(unittest.TestCase):
@@ -39,6 +43,21 @@ class FetchPublicIpTests(unittest.TestCase):
             "Unable to obtain public IP",
         ):
             fetch_public_ip()
+
+
+class InterfaceExistsTests(unittest.TestCase):
+    @patch("avpm.services.network.socket.if_nameindex")
+    def test_finds_interface(self, if_nameindex) -> None:
+        if_nameindex.return_value = [(1, "lo"), (2, "tun0")]
+
+        self.assertTrue(interface_exists("tun0"))
+        self.assertFalse(interface_exists("missing"))
+
+    @patch("avpm.services.network.socket.if_nameindex")
+    def test_returns_false_on_system_error(self, if_nameindex) -> None:
+        if_nameindex.side_effect = OSError("unavailable")
+
+        self.assertFalse(interface_exists("tun0"))
 
     @patch("avpm.services.network.urlopen")
     def test_wraps_network_errors(self, urlopen) -> None:

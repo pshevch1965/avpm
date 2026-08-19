@@ -43,6 +43,7 @@ vpn doctor
 | `vpn locations` | List VPN locations |
 | `vpn find QUERY` | Search locations by ISO code, country, or city |
 | `vpn ip` | Show the current public IPv4 or IPv6 address |
+| `vpn health` | Check VPN state, tunnel interface, and public IP |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
 | `vpn disconnect` | Disconnect the VPN |
@@ -84,6 +85,14 @@ Show the public IP address observed outside the VPN tunnel:
 ```bash
 vpn ip
 vpn ip --json
+```
+
+Check the complete connection health and use the exit code in scripts:
+
+```bash
+vpn health
+vpn health --json
+vpn health >/dev/null || echo "VPN health check failed"
 ```
 
 ## Fastest connection

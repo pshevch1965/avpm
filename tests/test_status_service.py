@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import unittest
 
-from avpm.services.status import extract_location, is_connected
+from avpm.services.status import (
+    extract_interface,
+    extract_location,
+    is_connected,
+)
 
 
 class IsConnectedTests(unittest.TestCase):
@@ -31,6 +35,16 @@ class ExtractLocationTests(unittest.TestCase):
 
     def test_returns_none_when_disconnected(self) -> None:
         self.assertIsNone(extract_location("VPN is disconnected"))
+
+
+class ExtractInterfaceTests(unittest.TestCase):
+    def test_extracts_interface(self) -> None:
+        status = "Connected to TALLINN in TUN mode, running on tun0"
+
+        self.assertEqual(extract_interface(status), "tun0")
+
+    def test_returns_none_without_interface(self) -> None:
+        self.assertIsNone(extract_interface("VPN is disconnected"))
 
 
 if __name__ == "__main__":

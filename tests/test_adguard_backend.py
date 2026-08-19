@@ -30,6 +30,7 @@ class AdGuardBackendStatusTests(unittest.TestCase):
 
         self.assertTrue(status.connected)
         self.assertEqual(status.location, "KYIV")
+        self.assertEqual(status.interface, "tun0")
         self.assertIn("KYIV", status.raw)
         self.assertNotIn("\x1b", status.raw)
 
@@ -47,6 +48,7 @@ class AdGuardBackendStatusTests(unittest.TestCase):
 
         self.assertFalse(status.connected)
         self.assertIsNone(status.location)
+        self.assertIsNone(status.interface)
 
     @patch.object(AdGuardBackend, "exists", return_value=True)
     @patch.object(AdGuardBackend, "_run")

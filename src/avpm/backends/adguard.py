@@ -6,7 +6,11 @@ from avpm.backends.base import Backend
 from avpm.exceptions import BackendError, BackendNotFoundError
 from avpm.models import Location, VPNStatus
 from avpm.services.locations import parse_locations
-from avpm.services.status import extract_location, is_connected
+from avpm.services.status import (
+    extract_interface,
+    extract_location,
+    is_connected,
+)
 from avpm.utils.text import strip_ansi
 
 
@@ -45,6 +49,7 @@ class AdGuardBackend(Backend):
         return VPNStatus(
             connected=is_connected(text),
             location=extract_location(text),
+            interface=extract_interface(text),
             raw=text,
         )
 

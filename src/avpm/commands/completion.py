@@ -23,6 +23,7 @@ COMMANDS = {
     "fastest": "Show fastest VPN locations",
     "find": "Search VPN locations",
     "ip": "Show public IP address",
+    "health": "Check VPN connection health",
     "completion": "Generate shell completion",
 }
 
@@ -51,6 +52,7 @@ OPTIONS = {
     "fastest": ("-h", "--help", "-c", "--country", "--json"),
     "find": ("-h", "--help", "--max-ping", "--json"),
     "ip": ("-h", "--help", "--json"),
+    "health": ("-h", "--help", "--json"),
     "completion": ("-h", "--help", "bash", "zsh"),
 }
 

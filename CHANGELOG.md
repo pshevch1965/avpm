@@ -7,6 +7,11 @@ Added:
 - `toggle` command for switching the VPN connection state
 - `find` command for searching locations by ISO code, country, or city
 - `ip` command with plain-text and JSON output
+- `health` command for VPN, tunnel-interface, and public-IP checks
+
+Changed:
+
+- JSON status output now includes the active tunnel interface
 
 ## 0.4.0-alpha4
 
