@@ -42,6 +42,7 @@ vpn doctor
 | `vpn toggle` | Connect when disconnected, or disconnect when connected |
 | `vpn locations` | List VPN locations |
 | `vpn find QUERY` | Search locations by ISO code, country, or city |
+| `vpn ip` | Show the current public IPv4 or IPv6 address |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
 | `vpn disconnect` | Disconnect the VPN |
@@ -76,6 +77,13 @@ vpn find est
 vpn find berlin
 vpn find united --max-ping 200
 vpn find tallinn --json
+```
+
+Show the public IP address observed outside the VPN tunnel:
+
+```bash
+vpn ip
+vpn ip --json
 ```
 
 ## Fastest connection

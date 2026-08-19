@@ -11,3 +11,7 @@ class BackendError(AvpmError):
 
 class BackendNotFoundError(BackendError):
     """Backend executable not found."""
+
+
+class NetworkError(AvpmError):
+    """Network request failed."""

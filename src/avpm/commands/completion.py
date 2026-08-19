@@ -22,6 +22,7 @@ COMMANDS = {
     "reconnect": "Reconnect VPN",
     "fastest": "Show fastest VPN locations",
     "find": "Search VPN locations",
+    "ip": "Show public IP address",
     "completion": "Generate shell completion",
 }
 
@@ -49,6 +50,7 @@ OPTIONS = {
     ),
     "fastest": ("-h", "--help", "-c", "--country", "--json"),
     "find": ("-h", "--help", "--max-ping", "--json"),
+    "ip": ("-h", "--help", "--json"),
     "completion": ("-h", "--help", "bash", "zsh"),
 }
 
