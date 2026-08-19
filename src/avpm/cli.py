@@ -7,6 +7,7 @@ from avpm.commands.about import register as register_about
 from avpm.commands.help import register as register_help
 from avpm.commands.version import register as register_version
 from avpm.commands.status import register as register_status
+from avpm.commands.toggle import register as register_toggle
 from avpm.exceptions import AvpmError
 from avpm.commands.backend import register as register_backend
 from avpm.commands.on import register as register_on
@@ -34,6 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_about(subparsers)
     register_help(subparsers, parser)
     register_status(subparsers)
+    register_toggle(subparsers)
     register_backend(subparsers)
     register_on(subparsers)
     register_off(subparsers)

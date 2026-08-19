@@ -11,6 +11,7 @@ COMMANDS = {
     "about": "About AVPM",
     "help": "Show help",
     "status": "Show VPN status",
+    "toggle": "Toggle VPN connection",
     "backend": "Show backend information",
     "on": "Connect VPN",
     "off": "Disconnect VPN",
@@ -25,6 +26,7 @@ COMMANDS = {
 
 OPTIONS = {
     "status": ("-h", "--help", "-q", "--quiet", "--json"),
+    "toggle": ("-h", "--help"),
     "on": ("-h", "--help", "-l", "--location"),
     "locations": (
         "-h",

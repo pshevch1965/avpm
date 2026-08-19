@@ -39,6 +39,7 @@ vpn doctor
 | `vpn status` | Show the raw AdGuard VPN connection status |
 | `vpn status --quiet` | Return `0` when connected and `1` otherwise, without output |
 | `vpn status --json` | Show structured connection status |
+| `vpn toggle` | Connect when disconnected, or disconnect when connected |
 | `vpn locations` | List VPN locations |
 | `vpn fastest [count]` | Show the locations with the lowest ping |
 | `vpn connect [location]` | Connect to the last or specified location |
